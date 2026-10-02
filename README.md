@@ -1,26 +1,28 @@
-# Retail Analytics Warehouse
+# End-to-End Retail Analytics Warehouse
 
-An end-to-end retail analytics project built with Snowflake, dbt Core, Python, and Metabase. The project transforms raw e-commerce data into analytical models and business-facing dashboards.
+An end-to-end retail analytics project built using Snowflake, dbt Core, Python, and Metabase. The project transforms historical e-commerce data into analytical models, business metrics, and interactive dashboards.
 
-## Project Overview
+## Project Objectives
 
-This project demonstrates a modern analytics workflow:
-- Ingest raw retail datasets into Snowflake.
-- Transform and organize data using dbt.
-- Build fact tables, dimension tables, and analytical marts.
+- Ingest retail data into Snowflake using Python.
+- Organize transformations using a Medallion-style architecture.
+- Build fact tables, dimension tables, and business-facing analytical marts.
 - Validate data using dbt tests.
-- Visualize revenue trends and product category performance in Metabase.
-- Compare query performance using pre-aggregated models.
+- Analyze sales, product performance, payments, and customer purchasing behavior.
+- Visualize business metrics in Metabase.
+- Compare detailed queries with pre-aggregated analytical models.
 - Demonstrate Snowflake Time Travel recovery.
 
 ## Technology Stack
 
-- **Data Warehouse:** Snowflake
-- **Transformation:** dbt Core, SQL
-- **Ingestion and Utilities:** Python
-- **Visualization:** Metabase
-- **Containerization:** Docker
-- **Version Control:** Git
+| Component | Technology |
+|---|---|
+| Cloud data warehouse | Snowflake |
+| Data transformation | dbt Core, SQL |
+| Ingestion and utilities | Python |
+| Data visualization | Metabase |
+| Containerization | Docker |
+| Version control | Git and GitHub |
 
 ## Architecture
 
@@ -37,10 +39,13 @@ Snowflake RAW
 dbt Staging Models
         |
         v
-Bronze and Silver Models
+BRONZE Layer
         |
         v
-Gold Fact and Dimension Tables
+SILVER Layer
+        |
+        v
+GOLD Fact Tables and Dimensions
         |
         v
 Analytical Data Marts
@@ -49,59 +54,94 @@ Analytical Data Marts
 Metabase Dashboard
 ```
 
-<img width="1277" height="608" alt="image" src="https://github.com/user-attachments/assets/cc88a802-20ce-45c7-b99e-9458b79dba22" />
-
+<img width="1277" height="608" alt="Retail analytics warehouse architecture" src="https://github.com/user-attachments/assets/cc88a802-20ce-45c7-b99e-9458b79dba22" />
 
 ## Data Sources
 
-The project uses the Brazilian e-commerce dataset commonly known as the Olist dataset, covering customers, orders, order items, payments, reviews, products, sellers, geolocation, and product category translations.
+The primary dataset is the Brazilian e-commerce dataset commonly known as the Olist dataset. It contains historical data covering customers, orders, order items, payments, reviews, products, sellers, geolocation, and product category translations.
 
-A separate marketing spend dataset contains **synthetic demonstration data**. Marketing performance outputs should not be interpreted as actual campaign-attributed revenue or verified ROAS.
+Marketing spend is represented by a separate synthetic demonstration dataset. Marketing performance outputs are exploratory and must not be interpreted as actual campaign-attributed revenue or verified ROAS.
 
 ## Data Warehouse and Modeling
 
-The Snowflake database contains the following schemas:
+The Snowflake database uses the following schemas:
 
 - `RAW` — source data loaded into Snowflake.
+- `STAGING` — dbt staging views over source data.
 - `BRONZE` — initial modeled copies of staging data.
-- `SILVER` — cleaned and enriched data models.
-- `GOLD` — fact tables, dimensions, and business-facing marts.
+- `SILVER` — cleaned and enriched models.
+- `GOLD` — fact tables, dimensions, and analytical marts.
 
-### Gold Models
+### Key Gold Models
 
-Key models include:
-
+**Fact tables**
 - `FCT_ORDERS`
 - `FCT_ORDER_ITEMS`
 - `FCT_PAYMENTS`
 - `FCT_MARKETING_SPEND`
+
+**Dimensions**
 - `DIM_CUSTOMER`
 - `DIM_PRODUCT`
 - `DIM_SELLER`
 - `DIM_DATE`
+
+**Analytical marts**
 - `MART_MONTHLY_SALES`
 - `MART_PRODUCT_PERFORMANCE`
 - `MART_SELLER_PERFORMANCE`
-- `MART_CUSTOMER_COHORTS`
-- `MART_PAYMENT_PERFORMANCE`
-- `MART_MARKETING_PERFORMANCE`
 - `MART_CATEGORY_YEARLY_SALES`
+- `MART_PAYMENT_PERFORMANCE`
+- `MART_CUSTOMER_COHORTS`
+- `MART_CUSTOMER_RETENTION`
+- `MART_CUSTOMER_PURCHASE_BEHAVIOR`
+- `MART_EXECUTIVE_KPIS`
+- `MART_MARKETING_PERFORMANCE`
 
-## Data Quality
+### Customer Analytics
 
-dbt tests cover important data quality checks, including:
-- Required values in key columns.
-- Uniqueness of primary identifiers.
-- Basic integrity checks on analytical models.
+- **Customer retention:** Measures repeat purchasing by first-purchase cohort and activity month.
+- **Purchase behavior:** Classifies customers as one-time or repeat purchasers based on observed distinct orders.
+- **Executive KPIs:** Provides aggregate revenue, order count, unique customers, and average order value.
 
-## Dashboard
+Customer retention is transaction-based; it does not measure website engagement or subscription retention. Purchase classifications describe historical observations and do not predict future behavior.
 
-The Metabase dashboard includes:
+See `docs/customer_analytics.md` for model definitions and limitations.
+
+## Data Quality and Build Validation
+
+dbt tests cover required values, uniqueness, and accepted values for selected analytical columns.
+
+The latest successful `dbt build` completed with:
+
+| Result | Count |
+|---|---:|
+| Table models | 38 |
+| View models | 10 |
+| Data tests | 23 |
+| Total operations | 71 |
+| Warnings | 0 |
+| Errors | 0 |
+
+Build results reflect the project state at the time of the run.
+
+## Metabase Dashboard
+
+The `Retail Analytics Dashboard` includes four KPI cards:
+
+- Total Revenue
+- Total Orders
+- Unique Customers
+- Average Order Value
+
+It also includes four visualizations:
 
 1. **Monthly Revenue Trend** — monthly revenue including freight, through August 2018.
 2. **Top 10 Product Categories by Revenue** — categories ranked by total revenue.
+3. **Customer Cohort Retention** — repeat-purchase retention by cohort and elapsed month.
+4. **Customer Purchase Type Distribution** — one-time versus repeat customers.
 
-The dashboard uses Snowflake as its data source and Metabase for visualization.
+The dashboard uses Snowflake's GOLD schema as its data source.
 
 ## Query Performance Comparison
 
@@ -109,61 +149,71 @@ A category-level annual revenue query was compared with a pre-aggregated analyti
 
 | Measurement | Result |
 |---|---:|
-| Baseline query elapsed time | 0.8854 seconds |
+| Detailed query elapsed time | 0.8854 seconds |
 | Pre-aggregated query elapsed time | 0.2838 seconds |
-| Baseline result rows | 72 |
-| Optimized result rows | 72 |
+| Rows returned by each query | 72 |
 | Mismatched category results | 0 |
 | Approximate elapsed-time reduction | 68% |
 
-These are observed timings from a single comparison run. Actual performance can vary due to caching, warehouse conditions, and network overhead.
+These timings are from a single comparison run. Actual performance may vary with caching, warehouse conditions, and network overhead. The comparison demonstrates equivalent results for the tested queries, not a guaranteed performance improvement for every workload.
 
 See `docs/performance_report.md` for details.
 
 ## Snowflake Time Travel Recovery
 
-A disposable demonstration table was used to test recovery of data from before an accidental update. The original values were recovered successfully, and the temporary demonstration tables were removed afterward.
+Two recovery demonstrations were performed using disposable test tables:
 
-See `docs/time_travel_recovery.md` for details.
+1. **Recovery after an update:** Used Snowflake Time Travel with a statement reference to recover the previous data state into a separate table.
+2. **Recovery after a table drop:** Used `UNDROP TABLE` to restore a dropped table and verified that its original rows were present.
+
+Both demonstrations were verified in Snowflake. The demonstrations illustrate recovery capabilities and are not a replacement for backups or a complete disaster recovery strategy.
+
+See `docs/time_travel_recovery.md` for the procedures and validation results.
 
 ## Prerequisites
 
 - Python 3
 - Snowflake account and appropriate warehouse permissions
-- dbt Core with the Snowflake adapter
-- Docker Desktop, for running Metabase locally
+- dbt Core and the Snowflake adapter
+- Docker Desktop for local Metabase deployment
+- The required source CSV files
 
 ## Configuration
 
-1. Configure the required Snowflake connection variables in a local `.env` file.
+1. Configure Snowflake connection variables in a local `.env` file.
 2. Configure the dbt profile in `~/.dbt/profiles.yml` using environment variables.
-3. Place the source CSV files in the expected local data locations.
-4. Keep credentials and raw data out of version control.
+3. Place source CSV files in the locations expected by the ingestion scripts.
+4. Ensure credentials and private configuration files remain outside version control.
 
-**Never commit `.env`, passwords, private keys, or other credentials.**
+Never commit `.env` files, passwords, private keys, or other credentials.
 
 ## Running dbt
 
-Activate the project's Python virtual environment, load the required environment variables, and run:
+From the project root, activate the virtual environment and load the environment variables required by your local configuration.
 
 ```bash
+source .venv/bin/activate
+set -a
+source .env
+set +a
+
 dbt debug
 dbt build
 ```
 
-Run commands from the project root. Ensure the Snowflake profile and source data are configured before building the models.
+The Snowflake profile, permissions, and source data must be configured before building the models.
 
 ## Running Metabase Locally
 
-With Docker Desktop running:
+With Docker Desktop running, start Metabase using:
 
 ```bash
 docker run -d -p 3000:3000 --name metabase metabase/metabase:latest
 ```
 
-Open `http://localhost:3000` in your browser, complete the initial setup, and connect Metabase to the Snowflake database and GOLD schema.
+Open `http://localhost:3000` in a browser, complete the initial setup, and connect Metabase to the Snowflake database and GOLD schema.
 
-If a container named `metabase` already exists, start the existing container instead:
+If a container named `metabase` already exists, start it instead:
 
 ```bash
 docker start metabase
@@ -177,28 +227,34 @@ retail-analytics-warehouse/
 ├── data/
 ├── data_generation/
 ├── docs/
+│   ├── customer_analytics.md
 │   ├── performance_report.md
 │   └── time_travel_recovery.md
 ├── ingestion/
 ├── macros/
 ├── models/
+│   ├── staging/
+│   ├── bronze/
+│   ├── silver/
+│   └── gold/
 ├── tests/
 ├── dbt_project.yml
-├── snowflake-queries
-└── README.md
+├── README.md
+└── snowflake-queries
 ```
 
 ## Limitations
 
-- Customer and product dimensions represent current modeled attributes, not full historical SCD Type 2 tracking.
-- Marketing spend is synthetic demonstration data.
-- Query performance timings are environment-dependent.
-- The source e-commerce dataset covers historical activity rather than live transactions.
+- The source dataset represents historical e-commerce activity, not live transactions.
+- Marketing spend is synthetic demonstration data; actual campaign attribution and verified ROAS are not established.
+- Customer and product dimensions use modeled current attributes rather than full historical SCD Type 2 tracking.
+- Performance measurements are environment-dependent and based on a single comparison run.
+- Customer retention measures observed repeat purchasing, not website engagement.
+- Customer purchase classifications are descriptive and not predictive.
 
 ## Future Improvements
 
-- Add dashboard screenshots and documentation.
-- Extend automated data quality and freshness checks.
-- Add orchestration for scheduled ingestion and transformation.
-- Improve dashboard filtering and business metric documentation.
-
+- Add automated ingestion and transformation orchestration.
+- Expand data freshness, relationship, and business-rule testing.
+- Add more dashboard filters and documented business definitions.
+- Explore campaign, customer acquisition, and lifetime-value analysis when suitable validated data becomes available.
