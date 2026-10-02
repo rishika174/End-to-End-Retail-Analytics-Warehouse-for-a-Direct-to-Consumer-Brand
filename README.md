@@ -49,7 +49,7 @@ Analytical Data Marts
 Metabase Dashboard
 ```
 
-<img width="1280" height="800" alt="Screenshot 2026-10-02 at 11 49 44 PM" src="https://github.com/user-attachments/assets/b36f55b1-dc99-4f1c-a190-7b92a3594a5b" />
+<img width="1277" height="608" alt="image" src="https://github.com/user-attachments/assets/cc88a802-20ce-45c7-b99e-9458b79dba22" />
 
 
 ## Data Sources
