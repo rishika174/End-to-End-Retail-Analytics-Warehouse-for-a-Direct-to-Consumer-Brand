@@ -54,7 +54,8 @@ Analytical Data Marts
 Metabase Dashboard
 ```
 
-<img width="1277" height="608" alt="Retail analytics warehouse architecture" src="https://github.com/user-attachments/assets/cc88a802-20ce-45c7-b99e-9458b79dba22" />
+<img width="550" height="546" alt="image" src="https://github.com/user-attachments/assets/de1094d8-084a-45c9-a9a1-a598cde61e1a" />
+
 
 ## Data Sources
 
