@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+.DS_Store
+target/
+logs/
+dbt_packages/
+profiles.yml
+data/raw/*.csv

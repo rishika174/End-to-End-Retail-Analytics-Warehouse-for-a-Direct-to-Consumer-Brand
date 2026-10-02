@@ -1,0 +1,9 @@
+SELECT
+    TRY_TO_DATE(TO_VARCHAR(SPEND_DATE)) AS spend_date,
+    LOWER(TRIM(MARKETING_CHANNEL)) AS marketing_channel,
+    TRIM(CAMPAIGN_NAME) AS campaign_name,
+    TRY_TO_DECIMAL(TO_VARCHAR(AD_SPEND), 12, 2) AS ad_spend,
+    TRY_TO_NUMBER(TO_VARCHAR(IMPRESSIONS)) AS impressions,
+    TRY_TO_NUMBER(TO_VARCHAR(CLICKS)) AS clicks,
+    DATA_SOURCE AS data_source
+FROM {{ source('raw', 'MARKETING_SPEND') }}

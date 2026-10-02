@@ -1,0 +1,29 @@
+name: retail_analytics_warehouse
+version: '1.0.0'
+config-version: 2
+
+profile: retail_analytics_warehouse
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  retail_analytics_warehouse:
+    staging:
+      +materialized: view
+      +schema: STAGING
+    bronze:
+      +materialized: table
+      +schema: BRONZE
+    silver:
+      +materialized: table
+      +schema: SILVER
+    gold:
+      +materialized: table
+      +schema: GOLD

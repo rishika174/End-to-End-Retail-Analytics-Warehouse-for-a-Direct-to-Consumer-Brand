@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: fct_order_items
+    description: "Order-item-level sales fact table."
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+      - name: order_item_id
+        data_tests:
+          - not_null
+      - name: item_revenue
+        data_tests:
+          - not_null
+
+  - name: fct_orders
+    description: "Order-level fact table."
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_customer
+    description: "Current-state customer dimension; historical changes are not available in the source."
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_product
+    description: "Product dimension."
+    columns:
+      - name: product_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: fct_marketing_spend
+    description: "Synthetic marketing spend for demonstration purposes."
+    columns:
+      - name: spend_date
+        data_tests:
+          - not_null
+      - name: marketing_channel
+        data_tests:
+          - not_null
+      - name: ad_spend
+        data_tests:
+          - not_null

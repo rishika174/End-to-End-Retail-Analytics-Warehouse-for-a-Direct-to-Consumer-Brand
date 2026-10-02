@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: raw
+    database: RISHIKA_RETAIL_ANALYTICS_DB
+    schema: RAW
+    tables:
+      - name: CUSTOMERS
+      - name: GEOLOCATION
+      - name: ORDER_ITEMS
+      - name: ORDER_PAYMENTS
+      - name: ORDER_REVIEWS
+      - name: ORDERS
+      - name: PRODUCTS
+      - name: SELLERS
+      - name: PRODUCT_CATEGORY_TRANSLATION
+      - name: MARKETING_SPEND
