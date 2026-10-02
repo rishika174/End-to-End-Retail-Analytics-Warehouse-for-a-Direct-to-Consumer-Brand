@@ -49,6 +49,9 @@ Analytical Data Marts
 Metabase Dashboard
 ```
 
+<img width="1280" height="800" alt="Screenshot 2026-10-02 at 11 49 44 PM" src="https://github.com/user-attachments/assets/b36f55b1-dc99-4f1c-a190-7b92a3594a5b" />
+
+
 ## Data Sources
 
 The project uses the Brazilian e-commerce dataset commonly known as the Olist dataset, covering customers, orders, order items, payments, reviews, products, sellers, geolocation, and product category translations.
