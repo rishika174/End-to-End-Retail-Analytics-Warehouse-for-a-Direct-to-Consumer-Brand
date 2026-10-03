@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project includes three customer analytics models in the GOLD schema:
+This project includes four customer analytics models in the GOLD schema:
 - `MART_CUSTOMER_RETENTION`
 - `MART_CUSTOMER_PURCHASE_BEHAVIOR`
 - `DIM_CUSTOMER_SCD2`
@@ -74,3 +74,24 @@ The source dataset does not provide actual address-change timestamps or a comple
 - Customer retention measures repeat purchases, not customer activity on a website.
 - One-time versus repeat classification is based on distinct orders with valid purchase dates.
 - Customer address history is inferred from transaction dates rather than source-provided change timestamps.
+
+## 4. MART_CUSTOMER_LIFETIME_VALUE
+
+Provides customer-level historical revenue and observed purchasing metrics using the GOLD order-item fact table and customer dimension.
+
+Key fields:
+- `CUSTOMER_UNIQUE_ID`: Customer identifier used to group purchases.
+- `TOTAL_ORDERS`: Number of distinct observed orders.
+- `HISTORICAL_REVENUE`: Sum of item totals, including freight.
+- `AVERAGE_ORDER_VALUE`: Historical revenue divided by distinct order count.
+- `FIRST_PURCHASE_DATE`: Earliest observed purchase date.
+- `LAST_PURCHASE_DATE`: Latest observed purchase date.
+- `OBSERVED_LIFESPAN_DAYS`: Days between the first and last observed purchase dates.
+
+### Interpretation and limitations
+
+This model reports historical purchasing behavior. `HISTORICAL_REVENUE` is not a prediction of future revenue and should not be interpreted as predictive customer lifetime value.
+
+The model includes customers with valid purchase dates and matching order-item records. Customers without qualifying order-item records are not included. A customer with only one observed purchase has an observed lifespan of zero days.
+
+Revenue includes item totals and freight, consistent with the project's monthly sales mart. The metric does not represent profit because product costs, operating costs, and customer acquisition costs are not deducted.

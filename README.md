@@ -97,6 +97,7 @@ The Snowflake database uses the following schemas:
 - `MART_CUSTOMER_COHORTS`
 - `MART_CUSTOMER_RETENTION`
 - `MART_CUSTOMER_PURCHASE_BEHAVIOR`
+- `MART_CUSTOMER_LIFETIME_VALUE`
 - `MART_EXECUTIVE_KPIS`
 - `MART_MARKETING_PERFORMANCE`
 
@@ -106,8 +107,9 @@ The Snowflake database uses the following schemas:
 - **Purchase behavior:** Classifies customers as one-time or repeat purchasers based on observed distinct orders.
 - **Customer address history:** Reconstructs address versions with `VALID_FROM`, `VALID_TO`, and `IS_CURRENT`; effective dates are inferred from order history.
 - **Executive KPIs:** Provides aggregate revenue, order count, unique customers, and average order value.
+- **Historical customer value:** Summarizes historical revenue, distinct orders, average order value, first and last purchase dates, and observed purchasing lifespan for each customer.
 
-Customer retention is transaction-based; it does not measure website engagement or subscription retention. Purchase classifications describe historical observations and do not predict future behavior.
+Customer retention is transaction-based; it does not measure website engagement or subscription retention. Purchase classifications describe historical observations and do not predict future behavior. The customer lifetime value model reports historical revenue, not predicted future value or profit; revenue includes item totals and freight, without deducting costs.
 
 See `docs/customer_analytics.md` for model definitions and limitations.
 
@@ -254,10 +256,11 @@ retail-analytics-warehouse/
 - Performance measurements are environment-dependent and based on a single comparison run.
 - Customer retention measures observed repeat purchasing, not website engagement.
 - Customer purchase classifications are descriptive and not predictive.
+- `MART_CUSTOMER_LIFETIME_VALUE` describes historical revenue and observed purchasing lifespan; it does not predict future customer value or calculate profit.
 
 ## Future Improvements
 
 - Add automated ingestion and transformation orchestration.
 - Expand data freshness, relationship, and business-rule testing.
 - Add more dashboard filters and documented business definitions.
-- Explore campaign, customer acquisition, and lifetime-value analysis when suitable validated data becomes available.
+- Add validated campaign attribution and customer acquisition cost analysis when suitable data becomes available.
