@@ -86,6 +86,7 @@ The Snowflake database uses the following schemas:
 - `DIM_PRODUCT`
 - `DIM_SELLER`
 - `DIM_DATE`
+- `DIM_CUSTOMER_SCD2` — reconstructed Type 2 customer address history.
 
 **Analytical marts**
 - `MART_MONTHLY_SALES`
@@ -103,6 +104,7 @@ The Snowflake database uses the following schemas:
 
 - **Customer retention:** Measures repeat purchasing by first-purchase cohort and activity month.
 - **Purchase behavior:** Classifies customers as one-time or repeat purchasers based on observed distinct orders.
+- **Customer address history:** Reconstructs address versions with `VALID_FROM`, `VALID_TO`, and `IS_CURRENT`; effective dates are inferred from order history.
 - **Executive KPIs:** Provides aggregate revenue, order count, unique customers, and average order value.
 
 Customer retention is transaction-based; it does not measure website engagement or subscription retention. Purchase classifications describe historical observations and do not predict future behavior.
@@ -117,10 +119,10 @@ The latest successful `dbt build` completed with:
 
 | Result | Count |
 |---|---:|
-| Table models | 38 |
+| Table models | 39 |
 | View models | 10 |
-| Data tests | 23 |
-| Total operations | 71 |
+| Data tests | 31 |
+| Total operations | 80 |
 | Warnings | 0 |
 | Errors | 0 |
 
@@ -248,7 +250,7 @@ retail-analytics-warehouse/
 
 - The source dataset represents historical e-commerce activity, not live transactions.
 - Marketing spend is synthetic demonstration data; actual campaign attribution and verified ROAS are not established.
-- Customer and product dimensions use modeled current attributes rather than full historical SCD Type 2 tracking.
+- The standard customer dimension uses current attributes; `DIM_CUSTOMER_SCD2` separately reconstructs address history using inferred effective dates.
 - Performance measurements are environment-dependent and based on a single comparison run.
 - Customer retention measures observed repeat purchasing, not website engagement.
 - Customer purchase classifications are descriptive and not predictive.

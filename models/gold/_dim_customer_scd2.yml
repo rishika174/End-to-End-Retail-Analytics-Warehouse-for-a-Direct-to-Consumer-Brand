@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: dim_customer_scd2
+    description: >
+      Reconstructed customer address history using inferred effective dates
+      from order purchase timestamps. This is not a source-provided change log.
+    columns:
+      - name: customer_version_key
+        description: Unique key for a customer address version.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_unique_id
+        data_tests:
+          - not_null
+
+      - name: valid_from
+        description: Inferred start date of this address version.
+        data_tests:
+          - not_null
+
+      - name: is_current
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
