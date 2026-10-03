@@ -113,6 +113,8 @@ Customer retention is transaction-based; it does not measure website engagement 
 
 See `docs/customer_analytics.md` for model definitions and limitations.
 
+See `docs/technical_architecture.md` for the complete architecture, data lineage, dimensional modeling, and implementation limitations.
+
 ## Data Quality and Build Validation
 
 dbt tests cover required values, uniqueness, and accepted values for selected analytical columns.
@@ -121,10 +123,10 @@ The latest successful `dbt build` completed with:
 
 | Result | Count |
 |---|---:|
-| Table models | 39 |
+| Table models | 41 |
 | View models | 10 |
-| Data tests | 31 |
-| Total operations | 80 |
+| Data tests | 39 |
+| Total operations | 90 |
 | Warnings | 0 |
 | Errors | 0 |
 
@@ -234,7 +236,8 @@ retail-analytics-warehouse/
 ├── docs/
 │   ├── customer_analytics.md
 │   ├── performance_report.md
-│   └── time_travel_recovery.md
+│   ├── time_travel_recovery.md
+│   └── technical_architecture.md
 ├── ingestion/
 ├── macros/
 ├── models/
