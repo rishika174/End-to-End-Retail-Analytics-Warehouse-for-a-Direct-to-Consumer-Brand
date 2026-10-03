@@ -87,3 +87,54 @@ different measurements and should not be treated as interchangeable.
 
 Further repeated runs under comparable conditions would be needed
 for a stronger performance conclusion.
+
+## Clustering Key Experiment
+
+### Objective
+Compare the same category-level sales aggregation on the original
+order-item fact table and a copy configured with a clustering key
+on order purchase date.
+
+### Setup
+- Platform: Snowflake
+- Warehouse: RISHIKA_RETAIL_ANALYTICS_WH (X-Small)
+- Original table: GOLD.FCT_ORDER_ITEMS
+- Experiment table: GOLD.FCT_ORDER_ITEMS_CLUSTERED_EXPERIMENT
+- Clustering key: ORDER_PURCHASE_DATE
+- Filter: calendar year 2017
+- Grouping: product category
+- Metrics: distinct order count and item revenue
+- Rows returned: 72 for both queries
+
+### Query Profile Results
+
+| Metric | Original table | Clustered experiment |
+|---|---:|---:|
+| Query ID | 01c77afe-3203-7b0e-0017-69ae0060adee | 01c77afd-3203-7b0e-0017-69ae0060ada2 |
+| Query History duration | Not recorded | 672 ms |
+| Query Profile execution time | 478 ms | 500 ms |
+| Bytes scanned | 4.09 MB | 4.19 MB |
+| Percentage scanned from cache | 0.00% | 0.00% |
+| Partitions scanned | 1 of 1 | 1 of 1 |
+| Query insight | None detected | Filter with clustering key |
+
+The category-level order counts and revenue values matched between
+the two queries.
+
+### Interpretation and Limitations
+
+The clustered experiment did not demonstrate a performance improvement
+in this run. Its Query Profile execution time was 500 ms, compared
+with 478 ms for the original table. It also scanned slightly more
+data (4.19 MB versus 4.09 MB).
+
+Both tables scanned their only reported partition, so this experiment
+did not demonstrate partition pruning. Snowflake identified the filter
+on the clustering key, but that insight alone does not establish a
+performance benefit.
+
+These results are single-run observations on a small dataset and
+should not be generalized to larger tables or different workloads.
+Repeated tests under comparable conditions and a dataset with enough
+micro-partitions to evaluate pruning would be needed for a stronger
+conclusion.
